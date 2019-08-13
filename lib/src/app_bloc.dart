@@ -4,7 +4,7 @@ import 'package:rxdart/subjects.dart';
 import 'models/user/user_model.dart';
 
 class AppBloc extends BlocBase {
-  var userController = BehaviorSubject<UserModel>();
+  BehaviorSubject<UserModel> userController = BehaviorSubject<UserModel>();
 
   //dispose will be called automatically by closing its streams
   @override
