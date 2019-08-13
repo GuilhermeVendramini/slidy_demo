@@ -8,8 +8,28 @@ class HasuraMessageRepository extends Disposable {
 
   HasuraMessageRepository(this.connection);
 
-  Future<MessageModel> sendMessage(String message, int userId) async {
-    String query = """
+  Stream<List<MessageModel>> getMessages() {
+    var query = """
+      subscription {
+        messages(order_by: {id: desc}) {
+          content
+          id
+          user {
+            name
+            id
+          }
+        }
+      }
+    """;
+
+    Snapshot snapshot = connection.subscription(query);
+    return snapshot.stream.map(
+          (jsonList) => MessageModel.fromJsonList(jsonList["data"]["messages"]),
+    );
+  }
+
+  Future<dynamic> sendMessage(String message, int userId){
+    var query = """
       sendMessage(\$message:String!,\$userId:Int!) {
         insert_messages(objects: {id_user: \$userId, content: \$message}) {
           affected_rows
@@ -17,17 +37,10 @@ class HasuraMessageRepository extends Disposable {
       }
     """;
 
-    Map<String, dynamic> data = await connection.mutation(query, variables: {
+    return connection.mutation(query, variables: {
       "message": message,
       "userId": userId,
     });
-    Map<String, dynamic> returning = data["data"]["insert_users"]["returning"][0];
-
-    return MessageModel(
-      id: returning['id'],
-      content: message,
-      user: UserModel.fromJson(returning["users"]),
-    );
   }
 
   //dispose will be called automatically by closing its streams

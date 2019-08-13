@@ -6,17 +6,17 @@ import '../../app_bloc.dart';
 import '../../app_module.dart';
 
 class LoginBloc extends BlocBase {
-  final HasuraUserRepository repository;
-  final appBloc = AppModule.to.bloc<AppBloc>();
+  final HasuraUserRepository _userRepository;
+  final _appBloc = AppModule.to.bloc<AppBloc>();
 
-  LoginBloc(this.repository);
+  LoginBloc(this._userRepository);
 
-  TextEditingController controller = TextEditingController();
+  TextEditingController nameTextEditingController = TextEditingController();
 
   Future<bool> login() async {
     try {
-      var user = await repository.getUser(controller.text);
-      appBloc.userController.add(user);
+      var user = await _userRepository.getUser(nameTextEditingController.text);
+      _appBloc.userController.add(user);
       return true;
     } catch (ex) {
       print(ex);
@@ -27,7 +27,7 @@ class LoginBloc extends BlocBase {
   //dispose will be called automatically by closing its streams
   @override
   void dispose() {
-    controller.dispose();
+    nameTextEditingController.dispose();
     super.dispose();
   }
 }

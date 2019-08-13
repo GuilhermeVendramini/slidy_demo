@@ -23,8 +23,8 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-              controller: bloc.controller,
-              decoration: InputDecoration(labelText: "NickName"),
+              controller: bloc.nameTextEditingController,
+              decoration: InputDecoration(labelText: "Name"),
             ),
             RaisedButton(
               child: Text("Enter"),
