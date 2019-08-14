@@ -11,9 +11,9 @@ class HomeModule extends ModuleWidget {
   @override
   List<Bloc> get blocs => [
         Bloc((i) => HomeBloc(
-          AppModule.to.get<HasuraMessageRepository>(),
-          AppModule.to.bloc<AppBloc>(),
-        )),
+              AppModule.to.get<HasuraMessageRepository>(),
+              AppModule.to.bloc<AppBloc>(),
+            )),
       ];
 
   @override

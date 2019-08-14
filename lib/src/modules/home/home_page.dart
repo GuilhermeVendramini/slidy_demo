@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/message/message_model.dart';
+import '../../shared/models/message/message_model.dart';
 import 'home_bloc.dart';
 import 'home_module.dart';
 
@@ -10,7 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final bloc = HomeModule.to.bloc<HomeBloc>();
+  final _blocMessage = HomeModule.to.bloc<HomeBloc>();
+  bool _enableSend = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
         title: Text("Home"),
       ),
       body: StreamBuilder<List<MessageModel>>(
-        stream: bloc.messagesController,
+        stream: _blocMessage.messagesController,
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(child: CircularProgressIndicator());
@@ -40,17 +41,27 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(5,0,5,5),
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
                 child: TextField(
-                  controller: bloc.messageTextEditingController,
+                  controller: _blocMessage.messageTextEditingController,
+                  onChanged: (value) {
+                    print(_blocMessage.messageTextEditingController.text);
+                    setState(() {
+                      value.isEmpty ? _enableSend = false : _enableSend = true;
+                    });
+                  },
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: bloc.sendMessage,
-                    ),
                   ),
                 ),
+              ),
+              RaisedButton(
+                child: Text('Send'),
+                onPressed: _enableSend &&
+                        _blocMessage
+                            .messageTextEditingController.text.isNotEmpty
+                    ? _blocMessage.sendMessage
+                    : null,
               ),
             ],
           );

@@ -1,9 +1,9 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import '../../repositories/hasura/user/hasura_user_repository.dart';
 
 import '../../app_bloc.dart';
 import '../../app_module.dart';
+import '../../repositories/hasura/user/hasura_user_repository.dart';
 
 class LoginBloc extends BlocBase {
   final HasuraUserRepository _userRepository;

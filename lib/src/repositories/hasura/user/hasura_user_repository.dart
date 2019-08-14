@@ -1,6 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:hasura_connect/hasura_connect.dart';
-import '../../../models/user/user_model.dart';
+
+import '../../../shared/models/user/user_model.dart';
 
 class HasuraUserRepository extends Disposable {
   final HasuraConnect connection;
@@ -17,7 +18,8 @@ class HasuraUserRepository extends Disposable {
       }
     """;
 
-    Map<String, dynamic> data = await connection.query(query, variables: {"name": user});
+    Map<String, dynamic> data =
+        await connection.query(query, variables: {"name": user});
     if (data["data"]["users"].isEmpty) {
       return createUser(user);
     } else {
@@ -36,7 +38,8 @@ class HasuraUserRepository extends Disposable {
       }
     """;
 
-    Map<String, dynamic> data = await connection.mutation(query, variables: {"name": name});
+    Map<String, dynamic> data =
+        await connection.mutation(query, variables: {"name": name});
     int id = data["data"]["insert_users"]["returning"][0]["id"];
     return UserModel(id: id, name: name);
   }
