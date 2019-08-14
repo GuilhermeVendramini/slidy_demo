@@ -8,9 +8,9 @@ class HasuraUserRepository extends Disposable {
 
   HasuraUserRepository(this.connection);
 
-  Future<UserModel> getUser(String name, String password) async {
+  Future<UserModel> getUser({String name, String password}) async {
     String query = """
-      getUser(\$name:String!, \$password:String!){
+      getUser(\$name:String!, \$password:String){
         users(where: {name: {_eq: \$name}, password: {_eq: \$password}}) {
           name
           id
@@ -21,16 +21,16 @@ class HasuraUserRepository extends Disposable {
     Map<String, dynamic> data = await connection
         .query(query, variables: {"name": name, "password": password});
     if (data["data"]["users"].isEmpty) {
-      return null; //createUser(name);
+      return null;
     } else {
       return UserModel.fromJson(data["data"]["users"][0]);
     }
   }
 
-  Future<UserModel> createUser(String name) async {
+  Future<UserModel> createUser({String name, String password}) async {
     String query = """
-      mutation createUser(\$name:String!) {
-        insert_users(objects: {name: \$name}) {
+      mutation createUser(\$name:String!, \$password:String!) {
+        insert_users(objects: {name: \$name, password: \$password}) {
           returning {
             id
           }
@@ -38,8 +38,8 @@ class HasuraUserRepository extends Disposable {
       }
     """;
 
-    Map<String, dynamic> data =
-        await connection.mutation(query, variables: {"name": name});
+    Map<String, dynamic> data = await connection
+        .mutation(query, variables: {"name": name, "password": password});
     int id = data["data"]["insert_users"]["returning"][0]["id"];
     return UserModel(id: id, name: name);
   }

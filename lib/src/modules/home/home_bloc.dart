@@ -28,8 +28,8 @@ class HomeBloc extends BlocBase with HomeValidators {
   void sendMessage() {
     if (_messageController.value != null) {
       _messageRepository.sendMessage(
-        _messageController.value,
-        _appBloc.userController.value.id,
+        message: _messageController.value,
+        userId: _appBloc.userController.value.id,
       );
     }
   }

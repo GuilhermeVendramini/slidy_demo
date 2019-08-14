@@ -28,7 +28,7 @@ class HasuraMessageRepository extends Disposable {
     );
   }
 
-  Future<dynamic> sendMessage(String message, int userId) {
+  Future<dynamic> sendMessage({String message, int userId}) {
     var query = """
       sendMessage(\$message:String!,\$userId:Int!) {
         insert_messages(objects: {id_user: \$userId, content: \$message}) {

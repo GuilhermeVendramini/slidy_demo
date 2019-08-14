@@ -1,18 +1,17 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/subjects.dart';
 
 import '../../app_bloc.dart';
 import '../../app_module.dart';
 import '../../repositories/hasura/user/hasura_user_repository.dart';
 import '../../shared/models/user/user_model.dart';
-import 'login_validators.dart';
+import 'register_validators.dart';
 
-class LoginBloc extends BlocBase with LoginValidators {
+class RegisterBloc extends BlocBase with RegisterValidators {
   final HasuraUserRepository _userRepository;
   final _appBloc = AppModule.to.bloc<AppBloc>();
 
-  LoginBloc(this._userRepository);
+  RegisterBloc(this._userRepository);
 
   final _nameController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
@@ -31,17 +30,21 @@ class LoginBloc extends BlocBase with LoginValidators {
 
   Function(String) get changePassword => _passwordController.sink.add;
 
-  Future<bool> login() async {
+  Future<bool> register() async {
     try {
       UserModel user = await _userRepository.getUser(
         name: _nameController.value,
-        password: _passwordController.value,
       );
 
-      if (user == null) {
-        message = 'Invalid name or password';
+      if (user != null) {
+        message = 'User name already exists';
         return false;
       }
+
+      user = await _userRepository.createUser(
+        name: _nameController.value,
+        password: _passwordController.value,
+      );
 
       _appBloc.userController.add(user);
       return true;

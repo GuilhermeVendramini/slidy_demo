@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-
 import '../../shared/widgets/stream_input_field.dart';
-import 'login_bloc.dart';
-import 'login_module.dart';
-import 'widgets/login_button.dart';
+
+import 'register_bloc.dart';
+import 'register_module.dart';
 import 'widgets/register_button.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final _bloc = LoginModule.to.bloc<LoginBloc>();
+class _RegisterPageState extends State<RegisterPage> {
+  final _bloc = RegisterModule.to.bloc<RegisterBloc>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login"),
+        title: Text("Register"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -35,11 +34,9 @@ class _LoginPageState extends State<LoginPage> {
             stream: _bloc.streamPassword,
             onChanged: _bloc.changePassword,
           ),
-          LoginButton(),
           RegisterButton(),
         ],
       ),
     );
   }
 }
-
