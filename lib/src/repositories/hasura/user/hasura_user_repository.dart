@@ -8,20 +8,20 @@ class HasuraUserRepository extends Disposable {
 
   HasuraUserRepository(this.connection);
 
-  Future<UserModel> getUser(String user) async {
+  Future<UserModel> getUser(String name, String password) async {
     String query = """
-      getUser(\$name:String!){
-        users(where: {name: {_eq: \$name}}) {
+      getUser(\$name:String!, \$password:String!){
+        users(where: {name: {_eq: \$name}, password: {_eq: \$password}}) {
           name
           id
         }
       }
     """;
 
-    Map<String, dynamic> data =
-        await connection.query(query, variables: {"name": user});
+    Map<String, dynamic> data = await connection
+        .query(query, variables: {"name": name, "password": password});
     if (data["data"]["users"].isEmpty) {
-      return createUser(user);
+      return null; //createUser(name);
     } else {
       return UserModel.fromJson(data["data"]["users"][0]);
     }

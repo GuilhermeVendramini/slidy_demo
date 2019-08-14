@@ -10,8 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _blocMessage = HomeModule.to.bloc<HomeBloc>();
-  bool _enableSend = false;
+  final _bloc = HomeModule.to.bloc<HomeBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class _HomePageState extends State<HomePage> {
         title: Text("Home"),
       ),
       body: StreamBuilder<List<MessageModel>>(
-        stream: _blocMessage.messagesController,
+        stream: _bloc.messagesController,
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(child: CircularProgressIndicator());
@@ -43,13 +42,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
                 child: TextField(
-                  controller: _blocMessage.messageTextEditingController,
-                  onChanged: (value) {
-                    print(_blocMessage.messageTextEditingController.text);
-                    setState(() {
-                      value.isEmpty ? _enableSend = false : _enableSend = true;
-                    });
-                  },
+                  controller: _bloc.messageTextEditingController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                   ),
@@ -57,11 +50,7 @@ class _HomePageState extends State<HomePage> {
               ),
               RaisedButton(
                 child: Text('Send'),
-                onPressed: _enableSend &&
-                        _blocMessage
-                            .messageTextEditingController.text.isNotEmpty
-                    ? _blocMessage.sendMessage
-                    : null,
+                onPressed: _bloc.sendMessage,
               ),
             ],
           );
