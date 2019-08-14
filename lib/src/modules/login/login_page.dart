@@ -10,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final bloc = LoginModule.to.bloc<LoginBloc>();
+  final _bloc = LoginModule.to.bloc<LoginBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +24,14 @@ class _LoginPageState extends State<LoginPage> {
           StreamInputField(
             hint: "Name",
             obscure: false,
-            stream: bloc.streamName,
-            onChanged: bloc.changeName,
+            stream: _bloc.streamName,
+            onChanged: _bloc.changeName,
           ),
           StreamInputField(
             hint: "Password",
             obscure: false,
-            stream: bloc.streamPassword,
-            onChanged: bloc.changePassword,
+            stream: _bloc.streamPassword,
+            onChanged: _bloc.changePassword,
           ),
           _LoginButton(),
         ],
@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class _LoginButton extends StatelessWidget {
-  final bloc = LoginModule.to.bloc<LoginBloc>();
+  final _bloc = LoginModule.to.bloc<LoginBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _LoginButton extends StatelessWidget {
     }
 
     return StreamBuilder<bool>(
-      stream: bloc.outSubmitValid,
+      stream: _bloc.outSubmitValid,
       builder: (context, snapshot) {
         return RaisedButton(
           child: Text("Login"),

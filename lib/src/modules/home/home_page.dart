@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/models/message/message_model.dart';
+import '../../shared/widgets/stream_input_field.dart';
 import 'home_bloc.dart';
 import 'home_module.dart';
 
@@ -11,6 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _bloc = HomeModule.to.bloc<HomeBloc>();
+  final _messageTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +41,19 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                child: TextField(
-                  controller: _bloc.messageTextEditingController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+              StreamInputField(
+                hint: "Message",
+                obscure: false,
+                stream: _bloc.streamMessage,
+                onChanged: _bloc.changeMessage,
+                controller: _messageTextEditingController,
               ),
               RaisedButton(
                 child: Text('Send'),
-                onPressed: _bloc.sendMessage,
+                onPressed: () {
+                  _bloc.sendMessage();
+                  _messageTextEditingController.text = '';
+                },
               ),
             ],
           );

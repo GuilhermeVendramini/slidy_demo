@@ -49,7 +49,7 @@ class LoginBloc extends BlocBase with LoginValidators {
       return false;
     }
   }
-  
+
   @override
   void dispose() {
     _nameController.close();
