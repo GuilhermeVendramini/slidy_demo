@@ -20,26 +20,33 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text("Login"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          StreamInputField(
-            hint: "Name",
-            obscure: false,
-            stream: _bloc.streamName,
-            onChanged: _bloc.changeName,
-          ),
-          StreamInputField(
-            hint: "Password",
-            obscure: true,
-            stream: _bloc.streamPassword,
-            onChanged: _bloc.changePassword,
-          ),
-          LoginButton(),
-          RegisterButton(),
-        ],
+      body: StreamBuilder<LoginState>(
+        stream: _bloc.streamState,
+        builder: (context, snapshot) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              snapshot.data == LoginState.LOADING
+                  ? CircularProgressIndicator()
+                  : SizedBox(height: 35.0),
+              StreamInputField(
+                hint: "Name",
+                obscure: false,
+                stream: _bloc.streamName,
+                onChanged: _bloc.changeName,
+              ),
+              StreamInputField(
+                hint: "Password",
+                obscure: true,
+                stream: _bloc.streamPassword,
+                onChanged: _bloc.changePassword,
+              ),
+              LoginButton(),
+              RegisterButton(),
+            ],
+          );
+        },
       ),
     );
   }
 }
-

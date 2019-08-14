@@ -8,14 +8,18 @@ import '../../repositories/hasura/user/hasura_user_repository.dart';
 import '../../shared/models/user/user_model.dart';
 import 'login_validators.dart';
 
+enum LoginState { IDLE, LOADING, SUCCESS, FAIL }
+
 class LoginBloc extends BlocBase with LoginValidators {
   final HasuraUserRepository _userRepository;
-  final _appBloc = AppModule.to.bloc<AppBloc>();
 
   LoginBloc(this._userRepository);
 
+  final _appBloc = AppModule.to.bloc<AppBloc>();
   final _nameController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
+  final _stateController = BehaviorSubject<LoginState>();
+
   String message;
 
   Stream<String> get streamName =>
@@ -23,6 +27,8 @@ class LoginBloc extends BlocBase with LoginValidators {
 
   Stream<String> get streamPassword =>
       _passwordController.stream.transform(validatePassword);
+
+  Stream<LoginState> get streamState => _stateController.stream;
 
   Stream<bool> get outSubmitValid =>
       Observable.combineLatest2(streamName, streamPassword, (a, b) => true);
@@ -33,6 +39,7 @@ class LoginBloc extends BlocBase with LoginValidators {
 
   Future<bool> login() async {
     try {
+      _stateController.add(LoginState.LOADING);
       UserModel user = await _userRepository.getUser(
         name: _nameController.value,
         password: _passwordController.value,
@@ -40,13 +47,16 @@ class LoginBloc extends BlocBase with LoginValidators {
 
       if (user == null) {
         message = 'Invalid name or password';
+        _stateController.add(LoginState.FAIL);
         return false;
       }
 
       _appBloc.userController.add(user);
+      _stateController.add(LoginState.SUCCESS);
       return true;
     } catch (ex) {
       message = 'Internal error. Please, try later';
+      _stateController.add(LoginState.FAIL);
       return false;
     }
   }
@@ -55,6 +65,7 @@ class LoginBloc extends BlocBase with LoginValidators {
   void dispose() {
     _nameController.close();
     _passwordController.close();
+    _stateController.close();
     super.dispose();
   }
 }
